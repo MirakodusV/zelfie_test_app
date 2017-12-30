@@ -15,9 +15,9 @@ import java.util.ArrayList;
  */
 
 public class ListViewAdapter extends BaseAdapter {
-    Activity context;
-    ArrayList<String> type;
-    ArrayList<String> setup;
+    private Activity context;
+    private ArrayList<String> type;
+    private ArrayList<String> setup;
 
     public ListViewAdapter(Activity context, ArrayList<String> type, ArrayList<String> setup) {
         super();
@@ -52,6 +52,7 @@ public class ListViewAdapter extends BaseAdapter {
         LayoutInflater inflater = context.getLayoutInflater();
 
         if (convertView == null) {
+            // get both textview items so we can set the holder with both text view items and the "convert" the view
             convertView = inflater.inflate(R.layout.listitem_row, null);
             holder = new ViewHolder();
             holder.txtViewType = (TextView) convertView.findViewById(R.id.type);
@@ -65,6 +66,12 @@ public class ListViewAdapter extends BaseAdapter {
         holder.txtViewSetup.setText(setup.get(position));
 
         // change color
+        changeTextColor(holder);
+
+        return convertView;
+    }
+
+    private void changeTextColor(ViewHolder holder) {
         String type = (String)holder.txtViewType.getText();
         if (type.equals("knock-knock")) {
 
@@ -75,7 +82,5 @@ public class ListViewAdapter extends BaseAdapter {
             holder.txtViewType.setTextColor(Color.parseColor("#006400"));
             holder.txtViewSetup.setTextColor(Color.parseColor("#006400"));
         }
-
-        return convertView;
     }
 }

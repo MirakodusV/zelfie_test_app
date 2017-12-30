@@ -2,13 +2,10 @@ package com.jannik.zelfitestandroid;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView;
@@ -20,11 +17,23 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener {
 
+    private ListView listView;
+    private ListViewAdapter listViewAdapter;
+
+    final Context context = this;
+
+    ArrayList<String> allTypes = new ArrayList<>();
+    ArrayList<String> allSetups = new ArrayList<>();
+    ArrayList<String> allPunchlines = new ArrayList<>();
+
+    /*
+    Reads the json File and returns it in a string (result)
+     */
     public String readFile() {
         String result = "";
         try {
@@ -43,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return result;
     }
 
+    /*
+    takes the json string and sets the different joke's into an ArrayList
+     */
     public ArrayList<joke> parse() {
         String jsonData = readFile();
         //joke
@@ -74,16 +86,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return jokeList;
     }
 
-
-    private ListView listView;
-    private ListViewAdapter listViewAdapter;
-
-    final Context context = this;
-
-    ArrayList<String> allTypes = new ArrayList<>();
-    ArrayList<String> allSetups = new ArrayList<>();
-    ArrayList<String> allPunchlines = new ArrayList<>();
-
+    /*
+    implements what happens on the main activity: showing the jokelist in the listview
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             allPunchlines.add(jokeList.get(i).getPunchline());
         }
 
+        // init listViewAdapter, so the listViw shows the correct items
         listView = (ListView) findViewById(R.id.jokes);
         listViewAdapter = new ListViewAdapter(this, allTypes, allSetups);
 
@@ -108,41 +114,46 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         listView.setLongClickable(true);
         listView.setOnItemLongClickListener(this);
 
-
     }
 
-    /*public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
-        // TODO Auto-generated method stub
-        Toast.makeText(this,allPunchlines.get(position), Toast.LENGTH_LONG).show();
-    }*/
-
     public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
-        // TODO Auto-generated method stub
-        TextView tmpTV;
-
         // get punchline_dialogbox.xml view
         LayoutInflater li = LayoutInflater.from(context);
         View promptsView = li.inflate(R.layout.punchline_dialogbox, null);
 
-        // get textview item in the punchline dialogbox xml
-        tmpTV = (TextView) promptsView.findViewById(R.id.punchline);
+        // changes the dialogbox-text to the right punchline
+        setPunchlineText(promptsView, pos);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                context);
+        // create alert dialog
+        AlertDialog alertDialog = creatAlertDialog(promptsView);
+
+        // show it in the acitivity
+        alertDialog.show();
+
+        return true;
+    }
+
+    private AlertDialog creatAlertDialog(View promptsView) {
+        // init DialogBox
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
         // set punchline_dialogbox.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 
+        return alertDialogBuilder.create();
+    }
+
+    private void setPunchlineText(View promptsView, int pos) {
+        // get textview item in the punchline dialogbox xml
+        TextView tmpTV;
+        tmpTV = findPunchlineTV(promptsView);
+
         // change text to right punchline
         tmpTV.setText(allPunchlines.get(pos));
+    }
 
-        // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
-        alertDialog.show();
-
-        return true;
+    private TextView findPunchlineTV(View promptsView) {
+        return (TextView) promptsView.findViewById(R.id.punchline);
     }
 
 }

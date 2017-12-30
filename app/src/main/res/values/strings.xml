@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">zelfitestandroid</string>
-    <string name="test">test</string>
+    <string name="headingType">Type</string>
+    <string name="headingSetup">Setup</string>
 </resources>
