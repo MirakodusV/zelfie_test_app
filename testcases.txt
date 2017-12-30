@@ -1,0 +1,7 @@
+possible testcases:
+  1. File not found -> send user error message that the file is not at the right place
+  2. parsing did not work (there is no id/type/setup/punchline or anything at all in the json file) -> send user error, that the file contains not the searched items
+  3. listview not found -> send error message, that there is no listview with the used identifier
+  4. same with the layouts
+  5. DialogBox couldn't create -> error message, that the context is wrong
+  
